@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
@@ -10,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const categoriesRouter = require("./routes/Categories");
@@ -21,30 +23,36 @@ const ordersRouter = require("./routes/Order");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 
-const SECRET_KEY = "SECRET_KEY";
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // JWT options
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
 
-//middlewares
-
+// Middlewares
+server.use(morgan("dev")); // log every request to the console
 server.use(express.static("build"));
 server.use(cookieParser());
+
 server.use(
   session({
-    secret: "keyboard cat",
-    resave: false, // don't save session if unmodified
-    saveUninitialized: false, // don't create session until something stored
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: false,
   })
 );
+
 server.use(passport.authenticate("session"));
+
 server.use(
   cors({
+    origin: "http://localhost:5173",
+    credentials: true,
     exposedHeaders: ["X-Total-Count"],
   })
 );
+
 server.use(express.json()); // to parse req.body
 server.use("/products", isAuth(), productsRouter.router);
 // we can also use JWT token for client-only auth
@@ -127,7 +135,7 @@ passport.deserializeUser(function (user, cb) {
 main().catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");
+  await mongoose.connect(process.env.MONGODB_URL);
   console.log("database connected");
 }
 
