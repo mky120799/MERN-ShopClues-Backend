@@ -16,47 +16,48 @@ exports.fetchAllProducts = async (req, res) => {
   // filter = {"category":["smartphone","laptops"]}
   // sort = {_sort:"price",_order="desc"}
   // pagination = {_page:1,_limit=10}
-  // Build filter conditions
-  let filterConditions = [];
-
+  let condition = {}
   if (req.query.q && !req.query.search) {
     req.query.search = req.query.q;
   }
-
-  if (!req.query.admin) {
-    filterConditions.push({ deleted: { $ne: true } });
+  if(!req.query.admin){
+      condition.deleted = {$ne:true}
   }
+  
+  let query = Product.find(condition);
+  let totalProductsQuery = Product.find(condition);
 
   // Search functionality
-  if (req.query.search) {
-    const searchRegex = new RegExp(`.*${req.query.search}.*`, "i"); // wildcard regex
-    filterConditions.push({
-      $or: [
-        { title: searchRegex },
-        { description: searchRegex },
-        { brand: searchRegex },
-      ]
-    });
-  }
+ if (req.query.search) {
+   const searchRegex = new RegExp(`.*${req.query.search}.*`, "i"); // wildcard regex
+   query = query.find({
+     $or: [
+       { title: searchRegex },
+       { description: searchRegex },
+       { brand: searchRegex },
+     ],
+   });
+   totalProductsQuery = totalProductsQuery.find({
+     $or: [
+       { title: searchRegex },
+       { description: searchRegex },
+       { brand: searchRegex },
+     ],
+   });
+ }
 
-  // Category filtering
+  console.log(req.query.category);
+
   if (req.query.category) {
-    filterConditions.push({
-      category: { $in: req.query.category.split(',') }
+    query = query.find({ category: {$in:req.query.category.split(',')} });
+    totalProductsQuery = totalProductsQuery.find({
+      category: {$in:req.query.category.split(',')},
     });
   }
-
-  // Brand filtering
   if (req.query.brand) {
-    filterConditions.push({
-      brand: { $in: req.query.brand.split(',') }
-    });
+    query = query.find({ brand: {$in:req.query.brand.split(',')} });
+    totalProductsQuery = totalProductsQuery.find({ brand: {$in:req.query.brand.split(',') }});
   }
-
-  const finalCondition = filterConditions.length > 0 ? { $and: filterConditions } : {};
-
-  let query = Product.find(finalCondition);
-  let totalProductsQuery = Product.find(finalCondition);
   if (req.query._sort && req.query._order) {
     query = query.sort({ [req.query._sort]: req.query._order });
   }

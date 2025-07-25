@@ -11,7 +11,6 @@ const jwt = require("jsonwebtoken");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const categoriesRouter = require("./routes/Categories");
@@ -22,38 +21,88 @@ const cartRouter = require("./routes/Cart");
 const ordersRouter = require("./routes/Order");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
+const path = require("path");
+const { Order } = require("./model/Order");
+const { env } = require("process");
+const morgan = require("morgan");
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+
+
+
+
+const endpointSecret = process.env.ENDPOINT_SECRET;
+// server.use(
+//   cors({
+//     origin: "http://localhost:5173", // Allow frontend origin
+//     credentials: true, // Allow cookies/auth headers
+//     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
+//   })
+// );
+// Webhook
+
+
+
+server.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (request, response) => {
+    const sig = request.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    } catch (err) {
+      response.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case "payment_intent.succeeded":
+        const paymentIntentSucceeded = event.data.object;
+
+        const order = await Order.findById(
+          paymentIntentSucceeded.metadata.orderId
+        );
+        order.paymentStatus = "received";
+        await order.save();
+
+        break;
+      // ... handle other event types
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    response.send();
+  }
+);
+
 // JWT options
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
+opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
-// Middlewares
-server.use(morgan("dev")); // log every request to the console
-server.use(express.static("build"));
+//middlewares
+
+server.use(express.static(path.resolve(__dirname, "dist")));
 server.use(cookieParser());
+
 
 server.use(
   session({
     secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: false,
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
   })
 );
-
 server.use(passport.authenticate("session"));
 
-server.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    exposedHeaders: ["X-Total-Count"],
-  })
-);
-
 server.use(express.json()); // to parse req.body
+server.use(morgan('dev'))
 server.use("/products", isAuth(), productsRouter.router);
 // we can also use JWT token for client-only auth
 server.use("/categories", isAuth(), categoriesRouter.router);
@@ -62,6 +111,11 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
+
+// this line we add to make react router work in case of other routes doesnt match
+server.get("*", (req, res) =>
+  res.sendFile(path.resolve("dist", "index.html"))
+);
 
 // Passport Strategies
 passport.use(
@@ -72,6 +126,7 @@ passport.use(
     done
   ) {
     // by default passport uses username
+    // console.log({ email, password });
     try {
       const user = await User.findOne({ email: email });
       console.log(email, password, user);
@@ -88,8 +143,11 @@ passport.use(
           if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
             return done(null, false, { message: "invalid credentials" });
           }
-          const token = jwt.sign(sanitizeUser(user), SECRET_KEY);
-          done(null, { token }); // this lines sends to serializer
+          const token = jwt.sign(
+            sanitizeUser(user),
+            process.env.JWT_SECRET_KEY
+          );
+          done(null, { id: user.id, role: user.role, token }); // this lines sends to serializer
         }
       );
     } catch (err) {
@@ -101,7 +159,6 @@ passport.use(
 passport.use(
   "jwt",
   new JwtStrategy(opts, async function (jwt_payload, done) {
-    console.log({ jwt_payload });
     try {
       const user = await User.findById(jwt_payload.id);
       if (user) {
@@ -117,7 +174,6 @@ passport.use(
 
 // this creates session variable req.user on being called from callbacks
 passport.serializeUser(function (user, cb) {
-  console.log("serialize", user);
   process.nextTick(function () {
     return cb(null, { id: user.id, role: user.role });
   });
@@ -126,9 +182,33 @@ passport.serializeUser(function (user, cb) {
 // this changes session variable req.user when called from authorized request
 
 passport.deserializeUser(function (user, cb) {
-  console.log("de-serialize", user);
   process.nextTick(function () {
     return cb(null, user);
+  });
+});
+
+// Payments
+
+// This is your test secret API key.
+const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
+
+server.post("/create-payment-intent", async (req, res) => {
+  const { totalAmount, orderId } = req.body;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: Math.round(totalAmount * 100), // for decimal compensation
+    currency: "usd",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+    metadata: {
+      orderId,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
   });
 });
 
@@ -139,6 +219,6 @@ async function main() {
   console.log("database connected");
 }
 
-server.listen(8080, () => {
-  console.log("server started");
+server.listen(process.env.PORT, () => {
+  console.log("server started",process.env.PORT);
 });

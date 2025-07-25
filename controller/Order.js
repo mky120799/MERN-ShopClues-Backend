@@ -17,12 +17,12 @@ exports.fetchOrdersByUser = async (req, res) => {
   exports.createOrder = async (req, res) => {
     const order = new Order(req.body);
     // here we have to update stocks;
-    
+    console.log("this is the body of orders",req.body);
     for(let item of order.items){
        let product =  await Product.findOne({_id:item.product.id})
        product.$inc('stock',-1*item.quantity);
        // for optimum performance we should make inventory outside of product.
-       await product.save()
+      
     }
 
     try {
