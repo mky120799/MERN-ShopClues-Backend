@@ -73,7 +73,10 @@ exports.resetPasswordRequest = async (req, res) => {
 
     // Also set token in email
     const resetPageLink =
-      'http://localhost:8080/reset-password?token=' + token + '&email=' + email;
+      "https://mern-shop-clues-backend.vercel.app/reset-password?token=" +
+      token +
+      "&email=" +
+      email;
     const subject = 'reset password for e-commerce';
     const html = `<p>Click <a href='${resetPageLink}'>here</a> to Reset Password</p>`;
 
