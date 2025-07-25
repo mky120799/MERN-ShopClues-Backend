@@ -32,13 +32,13 @@ const morgan = require("morgan");
 
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
-server.use(
-  cors({
-    origin: "http://localhost:5173", // Allow frontend origin
-    credentials: true, // Allow cookies/auth headers
-    exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
-  })
-);
+// server.use(
+//   cors({
+//     origin: "http://localhost:5173", // Allow frontend origin
+//     credentials: true, // Allow cookies/auth headers
+//     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
+//   })
+// );
 // Webhook
 
 
