@@ -26,22 +26,25 @@ const { Order } = require("./model/Order");
 const { env } = require("process");
 const morgan = require("morgan");
 
-
-
-
-
-
 const endpointSecret = process.env.ENDPOINT_SECRET;
 server.use(
   cors({
-    origin: "https://mern-shop-clues-frontend.vercel.app", // Allow frontend origin
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://mern-shop-clues-frontend.vercel.app",
+        "https://mern-shop-clues-frontend.vercel.app/",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }, // Allow frontend origin
     credentials: true, // Allow cookies/auth headers
     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
   })
 );
 // Webhook
-
-
 
 server.post(
   "/webhook",
@@ -91,7 +94,6 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY;
 // server.use(express.static(path.resolve(__dirname, "dist")));
 server.use(cookieParser());
 
-
 server.use(
   session({
     secret: process.env.SESSION_KEY,
@@ -102,7 +104,7 @@ server.use(
 server.use(passport.authenticate("session"));
 
 server.use(express.json()); // to parse req.body
-server.use(morgan('dev'))
+server.use(morgan("dev"));
 server.use("/products", isAuth(), productsRouter.router);
 // we can also use JWT token for client-only auth
 server.use("/categories", isAuth(), categoriesRouter.router);
@@ -220,5 +222,5 @@ async function main() {
 }
 
 server.listen(process.env.PORT, () => {
-  console.log("server started",process.env.PORT);
+  console.log("server started", process.env.PORT);
 });
