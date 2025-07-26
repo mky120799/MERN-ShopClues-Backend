@@ -32,13 +32,13 @@ const morgan = require("morgan");
 
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
-// server.use(
-//   cors({
-//     origin: "http://localhost:5173", // Allow frontend origin
-//     credentials: true, // Allow cookies/auth headers
-//     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
-//   })
-// );
+server.use(
+  cors({
+    origin: "https://mern-shop-clues-main.vercel.app/", // Allow frontend origin
+    credentials: true, // Allow cookies/auth headers
+    exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
+  })
+);
 // Webhook
 
 
@@ -88,7 +88,7 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 //middlewares
 
-server.use(express.static(path.resolve(__dirname, "dist")));
+// server.use(express.static(path.resolve(__dirname, "dist")));
 server.use(cookieParser());
 
 
@@ -113,9 +113,9 @@ server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
 
 // this line we add to make react router work in case of other routes doesnt match
-server.get("*", (req, res) =>
-  res.sendFile(path.resolve("dist", "index.html"))
-);
+// server.get("*", (req, res) =>
+//   res.sendFile(path.resolve("dist", "index.html"))
+// );
 
 // Passport Strategies
 passport.use(
