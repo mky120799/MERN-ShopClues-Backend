@@ -43,7 +43,11 @@ server.use(
     credentials: true, // Allow cookies/auth headers
     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
   })
-);
+
+  ////home route
+);server.get("/", (req, res) => {
+  res.send("MERN ShopClues Backend API");
+});
 // Webhook
 
 server.post(
