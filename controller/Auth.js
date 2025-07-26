@@ -21,9 +21,11 @@ exports.createUser = async (req, res) => {
               process.env.JWT_SECRET_KEY
             );
             res
-              .cookie('jwt', token, {
+              .cookie("jwt", token, {
                 expires: new Date(Date.now() + 3600000),
                 httpOnly: true,
+                sameSite: "None", // Required for cross-site cookies
+                secure: true, // Required for 'SameSite=None'
               })
               .status(201)
               .json({ id: doc.id, role: doc.role });

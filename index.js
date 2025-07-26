@@ -27,25 +27,29 @@ const { env } = require("process");
 const morgan = require("morgan");
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
-server.use(
-  cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        "https://mern-shop-clues-frontend.vercel.app",
-        "https://mern-shop-clues-frontend.vercel.app/",
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }, // Allow frontend origin
-    credentials: true, // Allow cookies/auth headers
-    exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
-  })
 
-  ////home route
-);server.get("/", (req, res) => {
+// server.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       const allowedOrigins = [
+//         "https://mern-shop-clues-frontend.vercel.app",
+//         "https://mern-shop-clues-frontend.vercel.app/",
+//       ];
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     }, // Allow frontend origin
+//     credentials: true, // Allow cookies/auth headers
+//     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
+//   })
+
+ 
+// );
+
+ ////home route
+server.get("/", (req, res) => {
   res.send("MERN ShopClues Backend API");
 });
 // Webhook
@@ -95,7 +99,7 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 //middlewares
 
-// server.use(express.static(path.resolve(__dirname, "dist")));
+server.use(express.static(path.resolve(__dirname, "dist")));
 server.use(cookieParser());
 
 server.use(
@@ -123,9 +127,9 @@ server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
 
 // this line we add to make react router work in case of other routes doesnt match
-// server.get("*", (req, res) =>
-//   res.sendFile(path.resolve("dist", "index.html"))
-// );
+server.get("*", (req, res) =>
+  res.sendFile(path.resolve("dist", "index.html"))
+);
 
 // Passport Strategies
 passport.use(
