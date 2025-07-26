@@ -30,14 +30,11 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 server.use(
   cors({
     origin: function (origin, callback) {
-      const allowedOrigins = [
-        "https://mern-shop-clues-frontend.vercel.app",
-        "https://mern-shop-clues-frontend.vercel.app/",
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
+      const allowedOrigin = "https://mern-shop-clues-frontend.vercel.app";
+      if (!origin || origin.startsWith(allowedOrigin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("Not allowed by CORS: " + origin));
       }
     }, // Allow frontend origin
     credentials: true, // Allow cookies/auth headers
