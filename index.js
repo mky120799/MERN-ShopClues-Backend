@@ -29,8 +29,17 @@ const morgan = require("morgan");
 const endpointSecret = process.env.ENDPOINT_SECRET;
 server.use(
   cors({
-    origin: '*',
-   // Allow frontend origin
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://mern-shop-clues-frontend.vercel.app",
+        "https://mern-shop-clues-frontend.vercel.app/",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }, // Allow frontend origin
     credentials: true, // Allow cookies/auth headers
     exposedHeaders: ["X-Total-Count"], // If you need custom headers exposed
   })
