@@ -49,9 +49,9 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 // );
 
  ////home route
-server.get("/", (req, res) => {
-  res.send("MERN ShopClues Backend API");
-});
+// server.get("/", (req, res) => {
+//   res.send("MERN ShopClues Backend API");
+// });
 // Webhook
 
 server.post(
