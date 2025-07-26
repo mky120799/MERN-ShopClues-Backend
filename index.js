@@ -101,8 +101,12 @@ server.use(cookieParser());
 server.use(
   session({
     secret: process.env.SESSION_KEY,
-    resave: false, // don't save session if unmodified
-    saveUninitialized: false, // don't create session until something stored
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      sameSite: "none", // required for cross-origin cookies
+      secure: true      // cookies sent only over HTTPS (Vercel uses HTTPS)
+    }
   })
 );
 server.use(passport.authenticate("session"));
