@@ -221,13 +221,32 @@ server.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-main().catch((err) => console.log(err));
 
-async function main() {
-  await mongoose.connect(process.env.MONGODB_URL);
-  console.log("database connected");
-}
+const PORT = process.env.PORT || 3000;
 
-server.listen(process.env.PORT, () => {
-  console.log("server started", process.env.PORT);
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(" Connected to MongoDB");
+
+    server.listen(PORT, () => {
+      console.log(` Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(" Failed to connect to MongoDB:", error.message);
+    process.exit(1); // Exit the process if DB connection fails
+  }
+};
+
+mongoose.connection.on("error", (err) => {
+  console.error("Mongoose connection error:", err);
 });
+
+mongoose.connection.on("disconnected", () => {
+  console.warn("Mongoose disconnected");
+});
+
+startServer();
