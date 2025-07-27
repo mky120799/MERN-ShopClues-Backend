@@ -27,7 +27,6 @@ const { env } = require("process");
 const morgan = require("morgan");
 
 const endpointSecret = process.env.ENDPOINT_SECRET;
-
 // server.use(
 //   cors({
 //     origin: function (origin, callback) {
@@ -52,7 +51,7 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 // server.get("/", (req, res) => {
 //   res.send("MERN ShopClues Backend API");
 // });
-// Webhook
+// // Webhook
 
 server.post(
   "/webhook",
@@ -127,9 +126,9 @@ server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
 
 // this line we add to make react router work in case of other routes doesnt match
-server.get("*", (req, res) =>
-  res.sendFile(path.resolve("dist", "index.html"))
-);
+// server.get("*", (req, res) =>
+//   res.sendFile(path.resolve("dist", "index.html"))
+// );
 
 // Passport Strategies
 passport.use(
