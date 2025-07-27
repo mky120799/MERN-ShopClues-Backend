@@ -89,7 +89,7 @@ server.post(
     response.send();
   }
 );
-
+//
 // JWT options
 
 const opts = {};
