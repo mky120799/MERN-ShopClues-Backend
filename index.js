@@ -47,10 +47,7 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
  
 // );
 
- ////home route
-// server.get("/", (req, res) => {
-//   res.send("MERN ShopClues Backend API");
-// });
+
 // // Webhook
 
 server.post(
@@ -126,9 +123,9 @@ server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
 
 // this line we add to make react router work in case of other routes doesnt match
-// server.get("*", (req, res) =>
-//   res.sendFile(path.resolve("dist", "index.html"))
-// );
+server.get("*", (req, res) =>
+  res.sendFile(path.resolve("dist", "index.html"))
+);
 
 // Passport Strategies
 passport.use(
