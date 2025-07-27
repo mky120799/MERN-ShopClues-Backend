@@ -9,14 +9,6 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/index.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/dist/$1"
-    }
-  ]
+
+  "rewrites": [{ "source": "/(.*)", "destination": "index.js" }]
 }
