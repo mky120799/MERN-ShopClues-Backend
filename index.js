@@ -213,6 +213,8 @@ server.post("/create-payment-intent", async (req, res) => {
     },
   });
 
+  console.log('this is the payment intent in the backend',paymentIntent)
+
   res.send({
     clientSecret: paymentIntent.client_secret,
   });
