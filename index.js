@@ -30,10 +30,7 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 // server.use(
 //   cors({
 //     origin: function (origin, callback) {
-//       const allowedOrigins = [
-//         "https://mern-shop-clues-frontend.vercel.app",
-//         "https://mern-shop-clues-frontend.vercel.app/",
-//       ];
+//       const allowedOrigins = ["http://localhost:5173"];
 //       if (!origin || allowedOrigins.includes(origin)) {
 //         callback(null, true);
 //       } else {
