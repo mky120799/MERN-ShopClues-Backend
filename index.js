@@ -119,9 +119,9 @@ server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
 
-server.use(express.static(path.resolve(__dirname, "dist")));
-// this line we add to make react router work in case of other routes doesnt match
-server.get("*", (req, res) => res.sendFile(path.resolve(__dirname,"dist", "index.html")));
+// server.use(express.static(path.resolve(__dirname, "dist")));
+// // this line we add to make react router work in case of other routes doesnt match
+// server.get("*", (req, res) => res.sendFile(path.resolve(__dirname,"dist", "index.html")));
 
 // Passport Strategies
 passport.use(
