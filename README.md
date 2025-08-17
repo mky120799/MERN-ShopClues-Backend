@@ -70,3 +70,14 @@ cd mern-shopclues-clone
 ```bash
 npm install
 ```
+
+###3. Environment Variables
+```bash
+PORT=8080
+MONGODB_URL=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+STRIPE_SECRET_KEY=your_stripe_key
+EMAIL_USER=your_gmail
+EMAIL_PASS=your_gmail_app_password
+```
+
