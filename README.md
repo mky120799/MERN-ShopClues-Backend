@@ -64,8 +64,9 @@ The project demonstrates **industry-level architecture** with authentication, da
 ```bash
 git clone https://github.com/your-username/mern-shopclues-clone.git
 cd mern-shopclues-clone
-
+```
 
 ### 2. Install dependencies
 ```bash
 npm install
+```
