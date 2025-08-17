@@ -22,7 +22,6 @@ The complete project i.e., frontend and backend is hosted on Render to avoid sec
 10. [License](#license)
 
 
-# 🛒 MERN ShopClues Clone  
 
 A full-stack **E-commerce web application** built with the **MERN stack** that replicates core features of platforms like ShopClues.  
 It provides a seamless shopping experience with secure authentication, payments, admin panel, and real-time order management.  
@@ -71,7 +70,7 @@ cd mern-shopclues-clone
 npm install
 ```
 
-###3. Environment Variables
+### 3. Environment Variables
 ```bash
 PORT=8080
 MONGODB_URL=your_mongodb_connection_string
@@ -80,4 +79,19 @@ STRIPE_SECRET_KEY=your_stripe_key
 EMAIL_USER=your_gmail
 EMAIL_PASS=your_gmail_app_password
 ```
+
+### 4. Run the app locally
+```bash
+npm run dev
+```
+
+## ✨ Features
+	•	🛍 E-commerce Core – Products list, details, cart, checkout
+	•	🔐 Authentication – Passport.js with JWT for secure sessions
+	•	💳 Payments – Stripe Integration (Credit/Debit Cards)
+	•	📧 Email Services – Order confirmation + password reset
+	•	🛠 Admin Panel – Manage products & orders
+	•	⚡ Optimized Queries – Sorting, Filtering, Pagination with Mongoose
+	•	👤 User Profile – Order history, saved addresses
+	•	📱 Responsive Design – Built with Tailwind CSS
 
