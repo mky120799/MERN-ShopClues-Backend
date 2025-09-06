@@ -230,6 +230,139 @@ npm run dev
 
 
 ```
+ ####
 Backend Folder Structure
 
+```
+/Users/mky1207/Desktop/MERN-ShopClues-Backend/
+├── .DS_Store
+├─] .env (ignored)
+├── .gitignore
+├── README.md
+├── controller/
+│   ├── Auth.js
+│   ├── Brand.js
+│   ├── Cart.js
+│   ├── Category.js
+│   ├── Order.js
+│   ├── Product.js
+│   └── User.js
+├── data.json
+├── dist/
+│   ├── 1220351_shopclues_ecommerce_shopping_icon.svg
+│   ├── assets/
+│   │   ├── download-B6EKoiLa.svg
+│   │   ├── fasho-BHEYTsYH.png
+│   │   ├── imgi_10_2Platinum_Srushty_14April23-Ct7GAbHS.jpg
+│   │   ├── imgi_11_1Platinum_Srushty_14April23-DQ-JrBws.jpg
+│   │   ├── imgi_12_3Platinum_Srushty_14April23-CbYhycuN.jpg
+│   │   ├── imgi_4_madeinindia-Bgp831IY.png
+│   │   ├── imgi_8_smart-phone-web-11july25-YRRsR14D.jpg
+│   │   ├── imgi_9_intel_coreultra_web_18june-g8MadLC5.jpg
+│   │   ├── index-BMiCNVyT.css
+│   │   ├── index-CGpjnZ8T.js
+│   │   ├── phones-zzkuX9md.jpg
+│   │   └── user-DTMCY2Za.png
+│   └── index.html
+├── index.js
+├── model/
+│   ├── Brand.js
+│   ├── Cart.js
+│   ├── Category.js
+│   ├── Order.js
+│   ├── Product.js
+│   └── User.js
+├─] node_modules/ (ignored)
+├─] package-lock.json (ignored)
+├── package.json
+├── routes/
+│   ├── Auth.js
+│   ├── Brands.js
+│   ├── Cart.js
+│   ├── Categories.js
+│   ├── Order.js
+│   ├── Products.js
+│   └── Users.js
+└── services/
+    └── common.js
 
+```
+
+6. [Deployment](#deployment)
+
+## 🚀 Deployment  
+
+Initially, the project was deployed with the **frontend on Vercel** and the **backend on Render**. However, this setup introduced **CORS (Cross-Origin Resource Sharing) issues** because the client and server were hosted on different domains.  
+
+To resolve this and simplify deployment, the **frontend build output (`dist/` folder)** was moved into the **backend project structure**. This allowed the application to be deployed as a **single monolithic project** on Render, where:  
+- All **API routes** are served from the Express backend.  
+- The **React build files (dist)** are served as static assets directly from the backend.  
+- Unmatched routes fallback to `index.html` for React Router to handle client-side navigation.  
+
+This approach ensures:  
+- ✅ No CORS issues (everything runs on the same origin).  
+- ✅ Easier configuration (single deployment on Render).  
+- ✅ Backend + frontend tightly integrated in production.  
+
+**Live Application** 👉 [mern-shopclues-project.onrender.com](https://mern-shopclues-project.onrender.com)  
+
+
+## 🙏 Acknowledgments  
+
+This project was inspired by:  
+- [ShopClues](https://www.shopclues.com) for providing the reference platform.  
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for cloud database hosting.  
+- [Passport.js](http://www.passportjs.org) for simplifying authentication.
+- [Render](https://render.com) and [Vercel](https://vercel.com) for easy cloud deployment solutions.  
+- [Stripe](https://stripe.com) for enabling secure online payments.  
+- Open-source libraries and tools from the JavaScript community (React, Node, Express, MongoDB, etc.) that made development possible.  
+
+
+## 📜 Project History  
+
+The project was developed in multiple phases to simulate a real-world development lifecycle:  
+
+- **Phase 1 – Frontend Setup**  
+  - Initialized React with Vite.  
+  - Added routing using React Router v6.  
+  - Implemented basic UI with Tailwind CSS.  
+
+- **Phase 2 – Backend APIs**  
+  - Built Express server with routes for products, cart, users, and orders.  
+  - Connected to MongoDB Atlas using Mongoose.  
+  - Added authentication with Passport.js (Local + JWT).  
+
+- **Phase 3 – Integration**  
+  - Connected frontend with backend APIs using Redux Toolkit async thunks.  
+  - Implemented cart, checkout, and user profile flows.  
+  - Integrated Stripe for secure payments.  
+  - Added Nodemailer for password reset & order confirmation emails.  
+
+- **Phase 4 – Admin Panel**  
+  - Created admin routes for product and order management.  
+  - Built UI components for managing products and tracking orders.  
+
+- **Phase 5 – Deployment**  
+  - Initially deployed frontend on Vercel and backend on Render.  
+  - Faced CORS issues due to separate origins.  
+  - Optimized by merging frontend build (`dist`) with backend, deploying as a single app on Render.  
+
+Each phase was tested and improved based on feedback, following best practices for a production-ready MERN application.  
+
+
+## 👨‍💻 Contributors  
+
+- **Mithilesh Kumar Yaduvanshi** – Full-Stack Developer  
+  - Designed and implemented the entire MERN application.  
+  - Built REST APIs, integrated Stripe payments, and configured Passport.js authentication.  
+  - Developed React frontend with Redux Toolkit and Tailwind CSS.  
+  - Deployed production-ready application on Render with MongoDB Atlas.  
+
+🙌 Contributions, suggestions, and feedback are welcome!  
+Feel free to fork the repo and raise a PR.  
+
+## 📄 License  
+
+This project is licensed under the **MIT License** – you are free to use, modify, and distribute this project for personal or commercial purposes, provided proper credit is given.  
+
+See the [LICENSE](./LICENSE) file for details.  
