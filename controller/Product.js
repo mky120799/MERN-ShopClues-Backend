@@ -13,67 +13,55 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.fetchAllProducts = async (req, res) => {
-  // filter = {"category":["smartphone","laptops"]}
-  // sort = {_sort:"price",_order="desc"}
-  // pagination = {_page:1,_limit=10}
-  let condition = {}
-  if (req.query.q && !req.query.search) {
-    req.query.search = req.query.q;
-  }
-  if(!req.query.admin){
-      condition.deleted = {$ne:true}
-  }
-  
-  let query = Product.find(condition);
-  let totalProductsQuery = Product.find(condition);
-
-  // Search functionality
- if (req.query.search) {
-   const searchRegex = new RegExp(`.*${req.query.search}.*`, "i"); // wildcard regex
-   query = query.find({
-     $or: [
-       { title: searchRegex },
-       { description: searchRegex },
-       { brand: searchRegex },
-     ],
-   });
-   totalProductsQuery = totalProductsQuery.find({
-     $or: [
-       { title: searchRegex },
-       { description: searchRegex },
-       { brand: searchRegex },
-     ],
-   });
- }
-
-  console.log(req.query.category);
-
-  if (req.query.category) {
-    query = query.find({ category: {$in:req.query.category.split(',')} });
-    totalProductsQuery = totalProductsQuery.find({
-      category: {$in:req.query.category.split(',')},
-    });
-  }
-  if (req.query.brand) {
-    query = query.find({ brand: {$in:req.query.brand.split(',')} });
-    totalProductsQuery = totalProductsQuery.find({ brand: {$in:req.query.brand.split(',') }});
-  }
-  if (req.query._sort && req.query._order) {
-    query = query.sort({ [req.query._sort]: req.query._order });
-  }
-
-  const totalDocs = await totalProductsQuery.count().exec();
-  console.log({ totalDocs });
-
-  if (req.query._page && req.query._limit) {
-    const pageSize = req.query._limit;
-    const page = req.query._page;
-    query = query.skip(pageSize * (page - 1)).limit(pageSize);
-  }
-
   try {
+    let condition = {};
+
+    if (!req.query.admin) {
+      condition.deleted = { $ne: true };
+    }
+
+    // Search functionality
+    if (req.query.q && !req.query.search) {
+      req.query.search = req.query.q;
+    }
+
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, "i");
+      condition.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { brand: searchRegex },
+      ];
+    }
+
+    if (req.query.category) {
+      condition.category = { $in: req.query.category.split(",") };
+    }
+
+    if (req.query.brand) {
+      condition.brand = { $in: req.query.brand.split(",") };
+    }
+
+    // Base queries
+    let query = Product.find(condition);
+    let totalProductsQuery = Product.find(condition);
+
+    // Sorting
+    if (req.query._sort && req.query._order) {
+      query = query.sort({ [req.query._sort]: req.query._order });
+    }
+
+    // Pagination
+    if (req.query._page && req.query._limit) {
+      const pageSize = parseInt(req.query._limit);
+      const page = parseInt(req.query._page);
+      query = query.skip(pageSize * (page - 1)).limit(pageSize);
+    }
+
+    const totalDocs = await totalProductsQuery.countDocuments().exec();
     const docs = await query.exec();
-    res.set('X-Total-Count', totalDocs);
+
+    res.set("X-Total-Count", totalDocs);
     res.status(200).json(docs);
   } catch (err) {
     res.status(400).json(err);
