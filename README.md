@@ -98,7 +98,7 @@ npm run dev
 	•	📱 Responsive Design – Built with Tailwind CSS
 
  ## 📂 Folder Structure
- #### Frontend Folder Structure
+ #### Frontend Folder Structure  ![Frontend Part](https://github.com/mky120799/MERN-ShopClues-Frontend)
  ```bash
 
 
