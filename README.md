@@ -4,7 +4,7 @@ Developed a full-stack E-commerce platform (ShopClues Clone) with MERN stack, fe
 
 ## Deployments  
 
-The complete project i.e., frontend and backend is hosted on Render to avoid security and CORS issues.  
+The complete project, i.e., frontend and backend, is hosted on Render to avoid security and CORS issues.  
 
 **Complete Application** 👉 ([https://mern-shopclues-project.onrender.com](https://mern-shopclues-project.onrender.com/login))  
 
@@ -98,7 +98,7 @@ npm run dev
 	•	📱 Responsive Design – Built with Tailwind CSS
 
  ## 📂 Folder Structure
- #### Frontend Folder Structure  ![Frontend Part](https://github.com/mky120799/MERN-ShopClues-Frontend)
+ #### Frontend Folder Structure  [access 👉 Frontend Part ](https://github.com/mky120799/MERN-ShopClues-Frontend)
  ```bash
 
 
