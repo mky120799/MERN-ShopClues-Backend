@@ -6,7 +6,7 @@ Developed a full-stack E-commerce platform (ShopClues Clone) with MERN stack, fe
 
 The complete project i.e., frontend and backend is hosted on Render to avoid security and CORS issues.  
 
-**Complete Application** 👉 [mern-shopclues-project.onrender.com](https://mern-shopclues-project.onrender.com)  
+**Complete Application** 👉 [mern-shopclues-project.onrender.com]([https://mern-shopclues-project.onrender.com](https://mern-shopclues-project.onrender.com/login))  
 
 ## Table of Contents  
 
